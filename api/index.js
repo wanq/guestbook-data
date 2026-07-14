@@ -36,7 +36,7 @@ module.exports = async (req, res) => {
     // 允许访问，返回主页 HTML
     const fs = require('fs');
     const path = require('path');
-    const html = fs.readFileSync(path.join(process.cwd(), 'index.html'), 'utf-8');
+    const html = fs.readFileSync(path.join(process.cwd(), 'home.html'), 'utf-8');
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
     return res.end(html);
