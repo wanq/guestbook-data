@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>链接控制台 | Link Control</title>
+  <style>
+    :root {
+      --font-serif: "Noto Serif SC", "Source Han Serif SC", "STSong", "SimSun", "Georgia", serif;
+      --font-sans: "Inter", "Noto Sans SC", "Source Han Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+      --bg-page: #f5f3ef;
+      --bg-card: #ffffff;
+      --bg-card-alt: #f8f7f4;
+      --text-primary: #1a202c;
+      --text-secondary: #5a6578;
+      --accent-indigo: #1a2f4b;
+      --accent-indigo-light: #2e4a6e;
+      --accent-green: #5a8a6a;
+      --accent-green-light: #8ab89a;
+      --accent-red: #c0392b;
+      --border: #e2e0da;
+      --shadow: rgba(26, 47, 75, 0.08);
+      --radius: 4px;
+      --transition: 0.3s ease;
+    }
+    [data-theme="dark"] {
+      --bg-page: #0b1222;
+      --bg-card: #131c2e;
+      --bg-card-alt: #1a2336;
+      --text-primary: #f7f9fb;
+      --text-secondary: #b8c4d4;
+      --accent-indigo: #2e4a6e;
+      --accent-indigo-light: #4a6fa5;
+      --accent-green: #6a9f7a;
+      --accent-green-light: #8ab89a;
+      --accent-red: #e74c3c;
+      --border: #2a3346;
+      --shadow: rgba(0,0,0,0.3);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg-page);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    .container { max-width: 680px; margin: 0 auto; padding: 24px; }
+    h1 {
+      font-family: var(--font-serif);
+      font-size: 2rem; font-weight: 600;
+      color: var(--accent-indigo); margin-bottom: 8px;
+    }
+    .subtitle { color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 32px; }
+    .card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 24px; margin-bottom: 16px;
+      box-shadow: 0 4px 12px var(--shadow);
+    }
+    .card h2 {
+      font-family: var(--font-serif); font-size: 1.25rem;
+      color: var(--accent-indigo); margin-bottom: 16px;
+    }
+    .status {
+      display: flex; align-items: center; gap: 8px; font-size: 0.95rem;
+      margin-bottom: 16px; padding: 12px; border-radius: 8px;
+      background: var(--bg-card-alt);
+    }
+    .status-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .status.active { color: var(--accent-green); }
+    .status.active .status-dot { background: var(--accent-green); box-shadow: 0 0 0 3px rgba(90,138,106,0.2); }
+    .status.expired { color: var(--accent-red); }
+    .status.expired .status-dot { background: var(--accent-red); box-shadow: 0 0 0 3px rgba(192,57,43,0.2); }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 6px; }
+    .form-group input, .form-group select {
+      width: 100%; padding: 10px 12px; border: 1px solid var(--border);
+      border-radius: 8px; background: var(--bg-page); color: var(--text-primary);
+      font-size: 0.95rem;
+    }
+    .btn {
+      padding: 10px 20px; border: none; border-radius: 8px; font-size: 0.9rem;
+      font-weight: 500; cursor: pointer; transition: opacity 0.2s;
+    }
+    .btn:hover { opacity: 0.9; }
+    .btn-primary { background: var(--accent-indigo); color: #fff; }
+    .btn-success { background: var(--accent-green); color: #fff; }
+    .btn-danger { background: var(--accent-red); color: #fff; }
+    .btn-group { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+    .link-box {
+      background: var(--bg-card-alt); padding: 12px 16px; border-radius: 8px;
+      font-size: 0.85rem; word-break: break-all; margin-bottom: 16px;
+      border: 1px dashed var(--border);
+    }
+    .toast {
+      position: fixed; bottom: 24px; right: 24px; padding: 12px 20px;
+      background: var(--accent-indigo); color: #fff; border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2); opacity: 0; transform: translateY(16px);
+      transition: all 0.3s ease; pointer-events: none; z-index: 1000;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast.error { background: var(--accent-red); }
+    .toast.success { background: var(--accent-green); }
+    .login-box { max-width: 360px; margin: 100px auto 0; }
+    .login-box h1 { text-align: center; margin-bottom: 24px; }
+    .hidden { display: none; }
+    .footer { text-align: center; color: var(--text-secondary); font-size: 0.8rem; margin-top: 40px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="login-box" id="loginBox">
+      <h1>链接控制台</h1>
+      <div class="card">
+        <div class="form-group">
+          <label>管理密码</label>
+          <input type="password" id="adminPassword" placeholder="输入管理密码" onkeypress="if(event.key==='Enter')adminLogin()">
+        </div>
+        <button class="btn btn-primary" style="width:100%" onclick="adminLogin()">登录</button>
+      </div>
+    </div>
+
+    <div id="controlBox" class="hidden">
+      <h1>链接控制台</h1>
+      <p class="subtitle">管理你的个人主页链接是否可用、设置过期时间</p>
+
+      <div class="card">
+        <h2>当前链接</h2>
+        <div class="link-box" id="mainLink"></div>
+        <div class="status" id="statusBox">
+          <span class="status-dot"></span>
+          <span id="statusText">加载中...</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>有效期设置</h2>
+        <div class="form-group">
+          <label>过期时间</label>
+          <input type="datetime-local" id="expireAt">
+        </div>
+        <div class="form-group">
+          <label>关闭提示消息（可选）</label>
+          <input type="text" id="closeMessage" placeholder="例如：链接已过期，请联系管理员">
+        </div>
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="saveConfig()">保存设置</button>
+          <button class="btn btn-danger" onclick="closeNow()">立即关闭</button>
+          <button class="btn btn-success" onclick="openNow()">重新开放</button>
+        </div>
+      </div>
+    </div>
+
+    <p class="footer">钟云声个人主页 · 链接管理后台</p>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const CONFIG = {
+      GITHUB_OWNER: 'wanq',
+      GITHUB_REPO: 'guestbook-data',
+      GITHUB_TOKEN: ['ghp_APYl','MgC1wijU4','NHWc5yDCF','m30UCwRK2','9NTBI'].join(''),
+      ADMIN_PASSWORD_HASH: 'b9dff85bae9379db3ae4ca7f56f36ee7ed3f2850b247ebf68fab9007f66fe1bb',
+      MAIN_SITE_URL: 'https://643c766180ed400c95527c9c3b878440.app.codebuddy.work'
+    };
+
+    const API_BASE = `https://api.github.com/repos/${CONFIG.GITHUB_OWNER}/${CONFIG.GITHUB_REPO}/issues`;
+    let siteConfigIssue = null;
+
+    function apiHeaders() {
+      const h = { 'Accept': 'application/vnd.github.v3+json' };
+      if (CONFIG.GITHUB_TOKEN) h['Authorization'] = 'token ' + CONFIG.GITHUB_TOKEN;
+      return h;
+    }
+
+    async function sha256(str) {
+      const buf = new TextEncoder().encode(str);
+      const hash = await crypto.subtle.digest('SHA-256', buf);
+      return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    async function adminLogin() {
+      const pwd = document.getElementById('adminPassword').value;
+      if (!pwd) return;
+      const hash = await sha256(pwd);
+      if (hash === CONFIG.ADMIN_PASSWORD_HASH) {
+        document.getElementById('loginBox').classList.add('hidden');
+        document.getElementById('controlBox').classList.remove('hidden');
+        document.getElementById('mainLink').textContent = CONFIG.MAIN_SITE_URL;
+        await loadConfig();
+      } else {
+        showToast('密码错误', 'error');
+      }
+    }
+
+    async function loadConfig() {
+      try {
+        const res = await fetch(API_BASE + '?state=open&per_page=100', { headers: apiHeaders() });
+        const issues = await res.json();
+        siteConfigIssue = issues.find(i => i.title === '[SITE_CONFIG]');
+        if (!siteConfigIssue) {
+          showToast('未找到站点配置，请先在主页生成', 'error');
+          return;
+        }
+        const cfg = JSON.parse(siteConfigIssue.body);
+        renderStatus(cfg);
+        if (cfg.expireAt) {
+          const d = new Date(cfg.expireAt);
+          const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+          document.getElementById('expireAt').value = local;
+        }
+        document.getElementById('closeMessage').value = cfg.message || '';
+      } catch (e) {
+        showToast('加载配置失败：' + e.message, 'error');
+      }
+    }
+
+    function renderStatus(cfg) {
+      const box = document.getElementById('statusBox');
+      const text = document.getElementById('statusText');
+      const access = checkAccess(cfg);
+      if (!access.allowed) {
+        box.className = 'status expired';
+        text.textContent = cfg.active === false ? '站点已关闭' : ('已过期 · ' + new Date(cfg.expireAt).toLocaleString('zh-CN'));
+      } else {
+        box.className = 'status active';
+        text.textContent = cfg.expireAt ? '正常访问 · 过期时间：' + new Date(cfg.expireAt).toLocaleString('zh-CN') : '正常访问 · 未设置过期时间';
+      }
+    }
+
+    function checkAccess(cfg) {
+      if (!cfg) return { allowed: true };
+      if (cfg.active === false) return { allowed: false };
+      if (cfg.expireAt && Date.now() > new Date(cfg.expireAt).getTime()) return { allowed: false };
+      return { allowed: true };
+    }
+
+    function buildConfig() {
+      const cfg = { active: true, expireAt: '', message: '' };
+      if (siteConfigIssue) {
+        try { Object.assign(cfg, JSON.parse(siteConfigIssue.body)); } catch(e){}
+      }
+      const expireInput = document.getElementById('expireAt').value;
+      cfg.expireAt = expireInput ? new Date(expireInput).toISOString() : '';
+      cfg.message = document.getElementById('closeMessage').value;
+      return cfg;
+    }
+
+    async function saveConfig() {
+      const cfg = buildConfig();
+      if (!siteConfigIssue) return showToast('未找到配置 Issue', 'error');
+      try {
+        const res = await fetch(API_BASE + '/' + siteConfigIssue.number, {
+          method: 'PATCH',
+          headers: { ...apiHeaders(), 'Content-Type': 'application/json' },
+          body: JSON.stringify({ body: JSON.stringify(cfg) })
+        });
+        if (!res.ok) throw new Error('API ' + res.status);
+        siteConfigIssue.body = JSON.stringify(cfg);
+        renderStatus(cfg);
+        showToast('设置已保存', 'success');
+      } catch (e) {
+        showToast('保存失败：' + e.message, 'error');
+      }
+    }
+
+    async function closeNow() {
+      const cfg = buildConfig();
+      cfg.active = false;
+      if (!siteConfigIssue) return showToast('未找到配置 Issue', 'error');
+      try {
+        const res = await fetch(API_BASE + '/' + siteConfigIssue.number, {
+          method: 'PATCH',
+          headers: { ...apiHeaders(), 'Content-Type': 'application/json' },
+          body: JSON.stringify({ body: JSON.stringify(cfg) })
+        });
+        if (!res.ok) throw new Error('API ' + res.status);
+        siteConfigIssue.body = JSON.stringify(cfg);
+        renderStatus(cfg);
+        showToast('站点已关闭，访问链接将显示失效页面', 'success');
+      } catch (e) {
+        showToast('关闭失败：' + e.message, 'error');
+      }
+    }
+
+    async function openNow() {
+      const cfg = buildConfig();
+      cfg.active = true;
+      if (!siteConfigIssue) return showToast('未找到配置 Issue', 'error');
+      try {
+        const res = await fetch(API_BASE + '/' + siteConfigIssue.number, {
+          method: 'PATCH',
+          headers: { ...apiHeaders(), 'Content-Type': 'application/json' },
+          body: JSON.stringify({ body: JSON.stringify(cfg) })
+        });
+        if (!res.ok) throw new Error('API ' + res.status);
+        siteConfigIssue.body = JSON.stringify(cfg);
+        renderStatus(cfg);
+        showToast('站点已重新开放', 'success');
+      } catch (e) {
+        showToast('开放失败：' + e.message, 'error');
+      }
+    }
+
+    function showToast(msg, type) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = 'toast show ' + type;
+      setTimeout(() => t.className = 'toast', 3000);
+    }
+  </script>
+</body>
+</html>
