@@ -243,7 +243,7 @@
 
     async function loadConfig() {
       try {
-        const res = await fetch(API_BASE + '?state=open&per_page=100', { headers: apiHeaders() });
+        const res = await fetch(API_BASE + '?state=open&per_page=100&_t=' + Date.now(), { headers: apiHeaders(), cache: 'no-store' });
         const issues = await res.json();
         siteConfigIssue = issues.find(i => i.title === '[SITE_CONFIG]');
         if (!siteConfigIssue) {
