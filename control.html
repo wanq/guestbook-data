@@ -105,6 +105,7 @@
     .login-box { max-width: 360px; margin: 100px auto 0; }
     .login-box h1 { text-align: center; margin-bottom: 24px; }
     .hidden { display: none; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
     .footer { text-align: center; color: var(--text-secondary); font-size: 0.8rem; margin-top: 40px; }
   </style>
 </head>
@@ -127,7 +128,14 @@
 
       <div class="card">
         <h2>当前链接</h2>
-        <div class="link-box" id="mainLink"></div>
+        <div style="margin-bottom:12px">
+          <div style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:4px">国内访问（推荐）</div>
+          <div class="link-box" id="chinaLink"></div>
+        </div>
+        <div style="margin-bottom:12px">
+          <div style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:4px">海外访问</div>
+          <div class="link-box" id="mainLink"></div>
+        </div>
         <div class="status" id="statusBox">
           <span class="status-dot"></span>
           <span id="statusText">加载中...</span>
@@ -164,15 +172,52 @@
       GITHUB_TOKEN: ['ghp_APYl','MgC1wijU4','NHWc5yDCF','m30UCwRK2','9NTBI'].join(''),
       ADMIN_PASSWORD_HASH: 'b9dff85bae9379db3ae4ca7f56f36ee7ed3f2850b247ebf68fab9007f66fe1bb',
       MAIN_SITE_URL: 'https://guestbook-data.vercel.app/',
+      CHINA_SITE_URL: window.location.hostname.includes('codebuddy.work') ? window.location.origin + '/' : '',
     };
 
     const API_BASE = `https://api.github.com/repos/${CONFIG.GITHUB_OWNER}/${CONFIG.GITHUB_REPO}/issues`;
     let siteConfigIssue = null;
+    let isSaving = false;
 
     function apiHeaders() {
       const h = { 'Accept': 'application/vnd.github.v3+json' };
       if (CONFIG.GITHUB_TOKEN) h['Authorization'] = 'token ' + CONFIG.GITHUB_TOKEN;
       return h;
+    }
+
+    function setButtonsDisabled(disabled) {
+      document.querySelectorAll('.btn-group .btn').forEach(btn => btn.disabled = disabled);
+    }
+
+    async function saveConfigToGithub(cfg, successMsg) {
+      if (!siteConfigIssue) {
+        showToast('未找到配置 Issue', 'error');
+        return false;
+      }
+      if (isSaving) {
+        showToast('正在保存，请稍候', 'error');
+        return false;
+      }
+      isSaving = true;
+      setButtonsDisabled(true);
+      try {
+        const res = await fetch(API_BASE + '/' + siteConfigIssue.number, {
+          method: 'PATCH',
+          headers: { ...apiHeaders(), 'Content-Type': 'application/json' },
+          body: JSON.stringify({ body: JSON.stringify(cfg) })
+        });
+        if (!res.ok) throw new Error('API ' + res.status);
+        siteConfigIssue.body = JSON.stringify(cfg);
+        renderStatus(cfg);
+        showToast(successMsg, 'success');
+        return true;
+      } catch (e) {
+        showToast('保存失败：' + e.message, 'error');
+        return false;
+      } finally {
+        isSaving = false;
+        setButtonsDisabled(false);
+      }
     }
 
     async function sha256(str) {
@@ -189,6 +234,7 @@
         document.getElementById('loginBox').classList.add('hidden');
         document.getElementById('controlBox').classList.remove('hidden');
         document.getElementById('mainLink').textContent = CONFIG.MAIN_SITE_URL;
+        document.getElementById('chinaLink').textContent = CONFIG.CHINA_SITE_URL || '（部署后自动显示）';
         await loadConfig();
       } else {
         showToast('密码错误', 'error');
@@ -249,59 +295,19 @@
     }
 
     async function saveConfig() {
-      const cfg = buildConfig();
-      if (!siteConfigIssue) return showToast('未找到配置 Issue', 'error');
-      try {
-        const res = await fetch(API_BASE + '/' + siteConfigIssue.number, {
-          method: 'PATCH',
-          headers: { ...apiHeaders(), 'Content-Type': 'application/json' },
-          body: JSON.stringify({ body: JSON.stringify(cfg) })
-        });
-        if (!res.ok) throw new Error('API ' + res.status);
-        siteConfigIssue.body = JSON.stringify(cfg);
-        renderStatus(cfg);
-        showToast('设置已保存', 'success');
-      } catch (e) {
-        showToast('保存失败：' + e.message, 'error');
-      }
+      await saveConfigToGithub(buildConfig(), '设置已保存');
     }
 
     async function closeNow() {
       const cfg = buildConfig();
       cfg.active = false;
-      if (!siteConfigIssue) return showToast('未找到配置 Issue', 'error');
-      try {
-        const res = await fetch(API_BASE + '/' + siteConfigIssue.number, {
-          method: 'PATCH',
-          headers: { ...apiHeaders(), 'Content-Type': 'application/json' },
-          body: JSON.stringify({ body: JSON.stringify(cfg) })
-        });
-        if (!res.ok) throw new Error('API ' + res.status);
-        siteConfigIssue.body = JSON.stringify(cfg);
-        renderStatus(cfg);
-        showToast('站点已关闭，访问链接将显示失效页面', 'success');
-      } catch (e) {
-        showToast('关闭失败：' + e.message, 'error');
-      }
+      await saveConfigToGithub(cfg, '站点已关闭');
     }
 
     async function openNow() {
       const cfg = buildConfig();
       cfg.active = true;
-      if (!siteConfigIssue) return showToast('未找到配置 Issue', 'error');
-      try {
-        const res = await fetch(API_BASE + '/' + siteConfigIssue.number, {
-          method: 'PATCH',
-          headers: { ...apiHeaders(), 'Content-Type': 'application/json' },
-          body: JSON.stringify({ body: JSON.stringify(cfg) })
-        });
-        if (!res.ok) throw new Error('API ' + res.status);
-        siteConfigIssue.body = JSON.stringify(cfg);
-        renderStatus(cfg);
-        showToast('站点已重新开放', 'success');
-      } catch (e) {
-        showToast('开放失败：' + e.message, 'error');
-      }
+      await saveConfigToGithub(cfg, '站点已重新开放');
     }
 
     function showToast(msg, type) {
