@@ -954,14 +954,15 @@
       if (!API_BASE) return null;
       try {
         const res = await fetch(API_BASE + '?state=open&per_page=100', { headers: await apiHeaders() });
-        if (!res.ok) return null;
+        if (!res.ok) throw new Error('API ' + res.status);
         const issues = await res.json();
         const configIssue = issues.find(i => i.title === '[SITE_CONFIG]');
         if (!configIssue) return null;
         siteConfigIssueNumber = configIssue.number;
         return JSON.parse(configIssue.body);
       } catch (e) {
-        return null;
+        console.error('Load site config failed:', e);
+        return { active: false, message: '访问验证失败，请刷新重试' };
       }
     }
 
@@ -977,7 +978,9 @@
     }
 
     function checkSiteAccess(config) {
-      if (!config) return { allowed: true };
+      if (!config) {
+        return { allowed: false, message: translations[currentLang].siteClosedDefault };
+      }
       if (config.active === false) {
         return { allowed: false, message: config.message || translations[currentLang].siteClosedDefault };
       }
