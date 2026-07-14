@@ -857,7 +857,7 @@
         return data ? JSON.parse(data) : [];
       }
       try {
-        const res = await fetch(API_BASE + '?state=open&sort=created&direction=desc&per_page=100', { headers: await apiHeaders() });
+        const res = await fetch(API_BASE + '?state=open&sort=created&direction=desc&per_page=100&_t=' + Date.now(), { headers: await apiHeaders(), cache: 'no-store' });
         if (!res.ok) throw new Error('API ' + res.status);
         const issues = await res.json();
         return issues.filter(i => i.title !== '[SITE_CONFIG]').map(i => ({
@@ -953,7 +953,7 @@
     async function loadSiteConfig() {
       if (!API_BASE) return null;
       try {
-        const res = await fetch(API_BASE + '?state=open&per_page=100', { headers: await apiHeaders() });
+        const res = await fetch(API_BASE + '?state=open&per_page=100&_t=' + Date.now(), { headers: await apiHeaders(), cache: 'no-store' });
         if (!res.ok) throw new Error('API ' + res.status);
         const issues = await res.json();
         const configIssue = issues.find(i => i.title === '[SITE_CONFIG]');
