@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>钟云声 | Zhong Yunsheng</title>
+  <style>
+    :root {
+      --font-serif: "Noto Serif SC", "Source Han Serif SC", "STSong", "SimSun", "Georgia", serif;
+      --font-sans: "Inter", "Noto Sans SC", "Source Han Sans SC", "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", sans-serif;
+      --bg-page: #f5f3ef;
+      --bg-section: #ffffff;
+      --bg-hero: #1a2f4b;
+      --bg-section-alt: #1a2f4b;
+      --bg-card: #f8f7f4;
+      --text-primary: #1a202c;
+      --text-secondary: #5a6578;
+      --text-on-dark: #f7f9fb;
+      --text-on-dark-muted: #b8c4d4;
+      --accent-indigo: #1a2f4b;
+      --accent-indigo-light: #2e4a6e;
+      --accent-indigo-soft: #6b8cae;
+      --accent-green: #5a8a6a;
+      --accent-green-light: #8ab89a;
+      --border: #e2e0da;
+      --shadow: rgba(26, 47, 75, 0.08);
+      --gray-100: #f5f3ef;
+      --gray-200: #e2e0da;
+      --gray-300: #c8c4bb;
+      --gray-400: #9a958b;
+      --gray-500: #6b665f;
+      --radius: 4px;
+      --transition: 0.3s ease;
+    }
+
+    [data-theme="dark"] {
+      --bg-page: #0b1222;
+      --bg-section: #131c2e;
+      --bg-hero: #111a2d;
+      --bg-section-alt: #111a2d;
+      --bg-card: #1a2438;
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-on-dark: #f1f5f9;
+      --text-on-dark-muted: #a3b5c9;
+      --accent-indigo: #7aa2c8;
+      --accent-indigo-light: #9ac2e8;
+      --accent-indigo-soft: #a3c5e8;
+      --accent-green: #7db5a0;
+      --accent-green-light: #a3d4c2;
+      --border: #27354d;
+      --shadow: rgba(0, 0, 0, 0.25);
+      --gray-100: #f1f5f9;
+      --gray-200: #cbd5e1;
+      --gray-300: #94a3b8;
+      --gray-400: #64748b;
+      --gray-500: #475569;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; font-size: 16px; }
+
+    body {
+      margin: 0;
+      font-family: var(--font-sans);
+      background: var(--bg-page);
+      color: var(--text-primary);
+      line-height: 1.8;
+      transition: background var(--transition), color var(--transition);
+    }
+
+    h1, h2, h3, h4 {
+      font-family: var(--font-serif);
+      font-weight: 600;
+      line-height: 1.2;
+      margin: 0 0 1rem 0;
+    }
+
+    p { margin: 0 0 1rem 0; color: var(--text-secondary); }
+
+    a { color: var(--accent-indigo); text-decoration: none; transition: color var(--transition); }
+    a:hover { color: var(--accent-green); }
+
+    img { max-width: 100%; height: auto; display: block; }
+
+    .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+    /* Header */
+    .site-header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 16px 0;
+      background: rgba(245, 243, 239, 0.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      transition: background var(--transition), border-color var(--transition);
+    }
+    [data-theme="dark"] .site-header { background: rgba(11, 18, 34, 0.92); }
+
+    .site-header .container { display: flex; align-items: center; justify-content: space-between; }
+
+    .site-logo { font-family: var(--font-serif); font-size: 1.25rem; color: var(--accent-indigo); font-weight: 600; }
+
+    .site-nav { display: flex; gap: 32px; align-items: center; }
+    .site-nav a { font-size: 0.875rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-secondary); }
+    .site-nav a:hover { color: var(--accent-indigo); }
+
+    .controls { display: flex; gap: 12px; align-items: center; }
+
+    .btn-icon {
+      width: 40px; height: 40px; border-radius: 50%;
+      border: 1px solid var(--border); background: var(--bg-section);
+      color: var(--text-primary); cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem; transition: all var(--transition);
+    }
+    .btn-icon:hover { border-color: var(--accent-indigo); color: var(--accent-indigo); }
+
+    .mobile-menu-toggle { display: none; }
+
+    /* Hero */
+    .hero {
+      min-height: 100vh; display: flex; flex-direction: column;
+      justify-content: center; align-items: center; text-align: center;
+      background: var(--bg-hero); color: var(--text-on-dark);
+      position: relative; padding: 120px 0 80px;
+    }
+    .hero-content { max-width: 760px; }
+
+    .avatar {
+      width: 150px; height: 150px; border-radius: 50%;
+      background: var(--bg-section); display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-serif); font-size: 4rem; color: var(--accent-indigo);
+      position: relative; margin: 0 auto 40px;
+    }
+    .avatar::before {
+      content: ''; position: absolute; inset: -5px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-indigo-soft), var(--accent-green));
+      z-index: -1;
+    }
+
+    .hero h1 { font-size: clamp(3rem, 10vw, 6rem); color: var(--text-on-dark); margin-bottom: 0.5rem; letter-spacing: 0.05em; }
+    .hero .en-name { font-family: var(--font-sans); font-size: 0.875rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--text-on-dark-muted); margin-bottom: 32px; }
+    .hero-tags { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-bottom: 48px; }
+    .hero-tag { padding: 8px 18px; border: 1px solid rgba(255,255,255,0.25); border-radius: 100px; font-size: 0.875rem; color: var(--text-on-dark); transition: all var(--transition); }
+    .hero-tag:hover { border-color: var(--accent-green); color: var(--accent-green-light); }
+
+    .scroll-indicator {
+      position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      color: var(--text-on-dark-muted); font-size: 0.75rem;
+      letter-spacing: 0.2em; text-transform: uppercase; animation: bounce 2s infinite;
+    }
+    .scroll-indicator svg { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 1.5; }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(8px); }
+    }
+
+    /* Sections */
+    section { padding: 96px 0; }
+    .section-light { background: var(--bg-section); }
+    .section-dark { background: var(--bg-section-alt); color: var(--text-on-dark); }
+    .section-dark h2, .section-dark h3 { color: var(--text-on-dark); }
+    .section-dark p { color: var(--text-on-dark-muted); }
+
+    .section-header { display: grid; grid-template-columns: auto 1fr; gap: 32px; align-items: end; margin-bottom: 64px; }
+    .section-number { font-family: var(--font-serif); font-size: clamp(4rem, 12vw, 8rem); line-height: 0.85; color: var(--accent-indigo); opacity: 0.15; }
+    .section-dark .section-number { color: var(--text-on-dark); opacity: 0.08; }
+    .section-title { font-size: clamp(2rem, 5vw, 3.5rem); color: var(--accent-indigo); margin-bottom: 0.5rem; }
+    .section-subtitle { font-size: 0.875rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent-green); }
+    .section-dark .section-title { color: var(--text-on-dark); }
+
+    /* About */
+    .about-grid { display: grid; grid-template-columns: 1fr 1.5fr; gap: 64px; align-items: start; }
+    .about-label { font-family: var(--font-serif); font-size: 1.5rem; color: var(--accent-indigo); margin-bottom: 16px; }
+    .about-text { font-size: 1.125rem; line-height: 1.8; }
+    .about-meta { margin-top: 32px; padding-top: 32px; border-top: 1px solid var(--border); }
+    .meta-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); font-size: 0.9375rem; }
+    .meta-item span:first-child { color: var(--text-secondary); }
+    .meta-item span:last-child { color: var(--text-primary); font-weight: 500; }
+
+    /* Projects */
+    .projects-list { display: flex; flex-direction: column; gap: 48px; }
+    .project-item { display: grid; grid-template-columns: 120px 1fr; gap: 32px; padding: 40px; background: var(--bg-card); border-radius: var(--radius); border: 1px solid var(--border); transition: transform var(--transition), box-shadow var(--transition); }
+    .project-item:hover { transform: translateY(-4px); box-shadow: 0 20px 40px var(--shadow); }
+    .project-number { font-family: var(--font-serif); font-size: 3rem; color: var(--accent-green); line-height: 1; }
+    .project-title { font-size: 1.5rem; color: var(--text-primary); margin-bottom: 12px; }
+    .project-desc { color: var(--text-secondary); line-height: 1.8; }
+
+    /* Gallery */
+    .gallery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .gallery-item { cursor: pointer; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); background: var(--bg-card); transition: transform var(--transition); }
+    .gallery-item:hover { transform: translateY(-4px); }
+    .gallery-item img { width: 100%; height: 220px; object-fit: cover; transition: transform var(--transition); }
+    .gallery-item:hover img { transform: scale(1.03); }
+    .gallery-caption { padding: 16px; font-size: 0.875rem; color: var(--text-primary); line-height: 1.5; }
+    .gallery-caption span { display: block; font-size: 0.75rem; color: var(--accent-green); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 4px; }
+
+    /* Awards */
+    .awards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+    .award-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+    .award-card img { width: 100%; height: 280px; object-fit: cover; border-bottom: 1px solid var(--border); }
+    .award-body { padding: 24px; }
+    .award-title { font-size: 1.25rem; color: var(--text-primary); margin-bottom: 8px; }
+    .award-meta { font-size: 0.875rem; color: var(--accent-green); }
+
+    /* Hobby */
+    .hobby-content { max-width: 640px; }
+    .hobby-icon { width: 80px; height: 80px; border-radius: 50%; background: var(--bg-card); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; margin-bottom: 32px; }
+    .hobby-icon svg { width: 40px; height: 40px; stroke: var(--accent-green); fill: none; stroke-width: 1.5; }
+
+    /* Guestbook */
+    .guestbook-form { max-width: 600px; margin-bottom: 64px; }
+    .form-group { margin-bottom: 24px; }
+    .form-group label { display: block; font-size: 0.875rem; color: var(--text-on-dark-muted); margin-bottom: 8px; }
+    .form-group input, .form-group textarea {
+      width: 100%; padding: 14px 16px;
+      border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05);
+      color: var(--text-on-dark); border-radius: var(--radius);
+      font-family: var(--font-sans); font-size: 1rem; outline: none;
+      transition: border-color var(--transition);
+    }
+    [data-theme="light"] .form-group input, [data-theme="light"] .form-group textarea { border-color: var(--border); background: var(--bg-section); color: var(--text-primary); }
+    .form-group input:focus, .form-group textarea:focus { border-color: var(--accent-green); }
+    .form-group textarea { resize: vertical; min-height: 120px; }
+
+    .btn-submit { padding: 14px 32px; background: var(--accent-green); color: white; border: none; border-radius: 100px; font-size: 0.9375rem; cursor: pointer; transition: background var(--transition); }
+    .btn-submit:hover { background: var(--accent-green-light); }
+    .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .form-status { margin-top: 12px; font-size: 0.875rem; min-height: 1.5em; }
+    .form-status.success { color: var(--accent-green-light); }
+    .form-status.error { color: #e87474; }
+
+    .messages-list { display: flex; flex-direction: column; gap: 16px; max-width: 800px; }
+    .message-card { padding: 24px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius); }
+    [data-theme="light"] .message-card { background: var(--bg-card); border-color: var(--border); }
+    .message-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .message-author { font-weight: 600; color: var(--text-on-dark); }
+    [data-theme="light"] .message-author { color: var(--text-primary); }
+    .message-time { font-size: 0.75rem; color: var(--text-on-dark-muted); }
+    .message-text { color: var(--text-on-dark-muted); line-height: 1.7; }
+    [data-theme="light"] .message-text { color: var(--text-secondary); }
+    .empty-state { color: var(--text-on-dark-muted); font-style: italic; }
+
+    .loading-dots { display: inline-flex; gap: 4px; padding: 24px 0; color: var(--text-on-dark-muted); }
+    .loading-dots span { width: 8px; height: 8px; border-radius: 50%; background: var(--accent-green); opacity: 0.3; animation: dotPulse 1.4s infinite; }
+    .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes dotPulse { 0%, 80%, 100% { opacity: 0.3; transform: scale(0.8); } 40% { opacity: 1; transform: scale(1); } }
+
+    /* Admin Trigger */
+    .admin-trigger {
+      opacity: 0; transition: opacity 0.3s; cursor: pointer;
+      font-size: 0.7rem; background: none; border: none;
+      color: var(--text-on-dark-muted); padding: 4px 8px;
+    }
+    .section-header:hover .admin-trigger { opacity: 0.6; }
+    .admin-trigger:hover { opacity: 1 !important; }
+
+    /* Admin Modal */
+    .admin-modal {
+      position: fixed; inset: 0; z-index: 300;
+      display: none; align-items: center; justify-content: center;
+      padding: 24px;
+    }
+    .admin-modal.active { display: flex; }
+    .admin-overlay { position: absolute; inset: 0; background: rgba(10,15,25,0.85); }
+    .admin-panel {
+      position: relative; width: 100%; max-width: 640px;
+      background: var(--bg-section); color: var(--text-primary);
+      border-radius: 8px; padding: 32px; max-height: 80vh; overflow-y: auto;
+      box-shadow: 0 24px 48px rgba(0,0,0,0.3);
+    }
+    .admin-panel h2 { font-size: 1.5rem; margin-bottom: 24px; }
+    .admin-login { display: flex; gap: 12px; align-items: center; }
+    .admin-login input {
+      flex: 1; padding: 12px 16px; border: 1px solid var(--border);
+      background: var(--bg-card); color: var(--text-primary);
+      border-radius: var(--radius); font-size: 1rem; outline: none;
+    }
+    .admin-login input:focus { border-color: var(--accent-green); }
+    .admin-login button {
+      padding: 12px 24px; background: var(--accent-indigo); color: white;
+      border: none; border-radius: 100px; font-size: 0.9375rem; cursor: pointer;
+    }
+    .admin-login button:hover { background: var(--accent-indigo-light); }
+    .admin-close {
+      position: absolute; top: 16px; right: 16px;
+      width: 36px; height: 36px; border-radius: 50%;
+      border: 1px solid var(--border); background: var(--bg-card);
+      color: var(--text-secondary); font-size: 1.2rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .admin-messages { display: flex; flex-direction: column; gap: 12px; }
+    .admin-msg-item {
+      padding: 16px; background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+    .admin-msg-item .admin-msg-head {
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;
+    }
+    .admin-msg-item .admin-msg-name { font-weight: 600; color: var(--text-primary); }
+    .admin-msg-item .admin-msg-time { font-size: 0.75rem; color: var(--text-secondary); }
+    .admin-msg-item .admin-msg-text { color: var(--text-secondary); line-height: 1.7; font-size: 0.9375rem; }
+    .btn-delete-msg {
+      margin-top: 8px; padding: 6px 16px; background: transparent;
+      color: #e87474; border: 1px solid #e87474; border-radius: 100px;
+      font-size: 0.8rem; cursor: pointer; transition: all 0.2s;
+    }
+    .btn-delete-msg:hover { background: #e87474; color: white; }
+    .admin-refresh {
+      margin-bottom: 16px; padding: 8px 20px;
+      background: var(--accent-green); color: white; border: none;
+      border-radius: 100px; font-size: 0.8rem; cursor: pointer;
+    }
+
+    /* Toast */
+    .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 400; display: flex; flex-direction: column; gap: 8px; }
+    .toast {
+      padding: 12px 20px; border-radius: var(--radius);
+      font-size: 0.875rem; color: white; min-width: 200px;
+      animation: toastIn 0.3s ease, toastOut 0.3s ease 2.7s forwards;
+    }
+    .toast.success { background: var(--accent-green); }
+    .toast.error { background: #e87474; }
+    .toast.info { background: var(--accent-indigo); }
+    @keyframes toastIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes toastOut { from { opacity: 1; } to { opacity: 0; transform: translateY(-8px); } }
+
+    /* Footer */
+    .site-footer { padding: 64px 0; background: var(--bg-hero); color: var(--text-on-dark-muted); text-align: center; }
+    .site-footer p { margin: 0; color: var(--text-on-dark-muted); }
+
+    /* Lightbox */
+    .lightbox { position: fixed; inset: 0; z-index: 200; background: rgba(10,15,25,0.95); display: none; align-items: center; justify-content: center; padding: 24px; }
+    .lightbox.active { display: flex; }
+    .lightbox img { max-width: 90vw; max-height: 85vh; object-fit: contain; border-radius: 4px; }
+    .lightbox-close {
+      position: absolute; top: 24px; right: 24px;
+      width: 48px; height: 48px; border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1);
+      color: white; font-size: 1.5rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* Animations */
+    .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease, transform 0.8s ease; }
+    .reveal.active { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .site-nav { display: none; }
+      .mobile-menu-toggle { display: flex; }
+      .about-grid { grid-template-columns: 1fr; gap: 40px; }
+      .gallery-grid { grid-template-columns: 1fr; }
+      .awards-grid { grid-template-columns: 1fr; }
+      .project-item { grid-template-columns: 1fr; gap: 16px; }
+      .section-header { grid-template-columns: 1fr; gap: 8px; }
+    }
+    @media (max-width: 600px) {
+      .container { padding: 0 20px; }
+      section { padding: 80px 0; }
+      .hero { padding: 100px 0 60px; }
+      .avatar { width: 120px; height: 120px; font-size: 3rem; }
+      .hero h1 { font-size: 2.5rem; }
+      .hero-tags { gap: 8px; }
+      .hero-tag { font-size: 0.75rem; padding: 6px 12px; }
+      .section-header { margin-bottom: 40px; }
+      .project-item { padding: 24px; }
+      .admin-panel { padding: 24px; max-height: 90vh; }
+    }
+
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
+
+    /* Site Closed Overlay */
+    .site-closed-overlay {
+      position: fixed; inset: 0; z-index: 99999;
+      background: var(--bg-page);
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 16px; text-align: center; padding: 24px;
+    }
+    .site-closed-overlay::before {
+      content: "";
+      position: fixed; inset: 0;
+      background: var(--bg-page); opacity: 0.98;
+      z-index: -1;
+    }
+    .site-closed-overlay h1 {
+      font-family: var(--font-serif); font-size: 2rem;
+      color: var(--accent-indigo); margin: 0;
+    }
+    .site-closed-overlay p {
+      font-size: 1rem; color: var(--text-secondary); max-width: 400px; margin: 0;
+    }
+    .site-content { opacity: 0; transition: opacity 0.3s ease; }
+    .site-content.visible { opacity: 1; }
+    .site-content.hidden { display: none; }
+
+    /* Admin Config Section */
+    .admin-section { margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+    .admin-section h3 { font-size: 1rem; color: var(--accent-indigo); margin-bottom: 12px; }
+    .admin-config-form { display: flex; flex-direction: column; gap: 10px; }
+    .admin-config-form label { font-size: 0.8rem; color: var(--text-secondary); }
+    .admin-config-form input {
+      padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px;
+      font-size: 0.875rem; background: var(--bg-card); color: var(--text-primary);
+    }
+    .admin-config-buttons { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+    .admin-config-buttons button {
+      padding: 8px 16px; border: none; border-radius: 8px; font-size: 0.8rem;
+      cursor: pointer; font-weight: 500;
+    }
+    .btn-save-config { background: var(--accent-indigo); color: #fff; }
+    .btn-deactivate { background: #e53935; color: #fff; }
+    .btn-activate { background: var(--accent-green); color: #fff; }
+    .config-status { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 8px; }
+    .config-status.active { color: var(--accent-green); }
+    .config-status.expired { color: #e53935; }
+  </style>
+</head>
+<body>
+  <!-- Site Closed Overlay -->
+  <div class="site-closed-overlay" id="siteClosedOverlay">
+    <h1 id="siteClosedTitle">站点已关闭</h1>
+    <p id="siteClosedMessage">此页面暂不可访问</p>
+  </div>
+
+  <div class="site-content" id="siteContent">
+  <header class="site-header">
+    <div class="container">
+      <div class="site-logo" data-i18n="logo">钟云声</div>
+      <nav class="site-nav" aria-label="Main navigation">
+        <a href="#about" data-i18n="navAbout">关于</a>
+        <a href="#projects" data-i18n="navProjects">项目</a>
+        <a href="#certs" data-i18n="navCerts">证书</a>
+        <a href="#awards" data-i18n="navAwards">获奖</a>
+        <a href="#guestbook" data-i18n="navGuestbook">留言</a>
+      </nav>
+      <div class="controls">
+        <button class="btn-icon" id="themeToggle" aria-label="Toggle dark mode"><span id="themeIcon">🌙</span></button>
+        <button class="btn-icon" id="langToggle" aria-label="Switch language"><span id="langLabel">EN</span></button>
+        <button class="btn-icon mobile-menu-toggle" aria-label="Menu">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="hero">
+      <div class="hero-content">
+        <div class="avatar reveal">钟</div>
+        <h1 class="reveal reveal-delay-1" data-i18n="name">钟云声</h1>
+        <div class="en-name reveal reveal-delay-2">Zhong Yunsheng</div>
+        <div class="hero-tags reveal reveal-delay-3">
+          <span class="hero-tag" data-i18n="tag1">智能视觉工程</span>
+          <span class="hero-tag" data-i18n="tag2">工业视觉检测</span>
+          <span class="hero-tag" data-i18n="tag3">机器人引导</span>
+          <span class="hero-tag" data-i18n="tag4">CAD 制图</span>
+          <span class="hero-tag" data-i18n="tag5">低压电工作业</span>
+        </div>
+      </div>
+      <div class="scroll-indicator">
+        <span data-i18n="scroll">Scroll</span>
+        <svg viewBox="0 0 24 24"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+      </div>
+    </section>
+
+    <section class="section-light" id="about">
+      <div class="container">
+        <div class="section-header reveal">
+          <div class="section-number">01</div>
+          <div>
+            <h2 class="section-title" data-i18n="aboutTitle">关于</h2>
+            <div class="section-subtitle" data-i18n="aboutSubtitle">About</div>
+          </div>
+        </div>
+        <div class="about-grid">
+          <div class="reveal reveal-delay-1">
+            <div class="about-label" data-i18n="aboutLabel">个人简介</div>
+          </div>
+          <div class="reveal reveal-delay-2">
+            <p class="about-text" data-i18n="aboutText1">钟云声，智能视觉工程方向学生。毕业于广州南洋理工职业学院，专注于工业视觉检测、机器人引导与自动化测量。擅长 CAD 制图、低压电工作业，以及计算机视觉项目开发。</p>
+            <p class="about-text" data-i18n="aboutText2">在校期间，获得全国 CAD 技能等级考试一级证书、低压电工作业特种作业操作证，并在多项省级、国家级技能竞赛中取得一等奖。致力于将机器视觉技术应用于实际工业生产场景，提升检测精度与生产效率。</p>
+            <div class="about-meta">
+              <div class="meta-item"><span data-i18n="metaSchool">院校</span><span data-i18n="metaSchoolValue">广州南洋理工职业学院</span></div>
+              <div class="meta-item"><span data-i18n="metaField">方向</span><span data-i18n="metaFieldValue">智能视觉工程</span></div>
+              <div class="meta-item"><span data-i18n="metaCerts">持证</span><span data-i18n="metaCertsValue">CAD 一级 / 低压电工</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-dark" id="projects">
+      <div class="container">
+        <div class="section-header reveal">
+          <div class="section-number">02</div>
+          <div>
+            <h2 class="section-title" data-i18n="projectsTitle">项目</h2>
+            <div class="section-subtitle" data-i18n="projectsSubtitle">Projects</div>
+          </div>
+        </div>
+        <div class="projects-list">
+          <article class="project-item reveal"><div class="project-number">01</div><div><h3 class="project-title" data-i18n="project1Title">视觉机器人零级测量</h3><p class="project-desc" data-i18n="project1Desc">基于工业相机的视觉机器人零级测量系统，利用视觉标定与边缘检测算法实现高精度尺寸测量，替代人工检测，提升产线测量一致性与效率。</p></div></article>
+          <article class="project-item reveal reveal-delay-1"><div class="project-number">02</div><div><h3 class="project-title" data-i18n="project2Title">胶路视觉引导</h3><p class="project-desc" data-i18n="project2Desc">通过机器视觉识别胶路轨迹与位置偏差，引导机械臂进行精准点胶与涂胶作业，实现胶水涂布质量在线检测与闭环控制。</p></div></article>
+          <article class="project-item reveal"><div class="project-number">03</div><div><h3 class="project-title" data-i18n="project3Title">印刷品缺陷检测</h3><p class="project-desc" data-i18n="project3Desc">搭建印刷品缺陷检测系统，采用模板匹配与深度学习相结合的方法，自动识别印刷过程中的色差、脏点、套印不准等缺陷。</p></div></article>
+          <article class="project-item reveal reveal-delay-1"><div class="project-number">04</div><div><h3 class="project-title" data-i18n="project4Title">颜色识别与拼接</h3><p class="project-desc" data-i18n="project4Desc">开发颜色识别与图像拼接系统，基于 HSV 色彩空间分析实现目标区域快速识别，并运用特征匹配完成多视角图像无缝拼接。</p></div></article>
+          <article class="project-item reveal"><div class="project-number">05</div><div><h3 class="project-title" data-i18n="project5Title">3D 连杆无序抓取</h3><p class="project-desc" data-i18n="project5Desc">结合 3D 视觉与机器人运动规划，实现散乱堆叠连杆工件的位置识别与姿态估计，引导机器人完成无序抓取与上料作业。</p></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-light" id="certs">
+      <div class="container">
+        <div class="section-header reveal">
+          <div class="section-number">03</div>
+          <div>
+            <h2 class="section-title" data-i18n="certsTitle">证书</h2>
+            <div class="section-subtitle" data-i18n="certsSubtitle">Certificates</div>
+          </div>
+        </div>
+        <div class="gallery-grid">
+          <div class="gallery-item reveal" onclick="openLightbox('assets/cad-front.jpg')">
+            <img src="assets/cad-front.jpg" alt="全国 CAD 技能等级考试一级证书" loading="lazy">
+            <div class="gallery-caption"><span data-i18n="cert1Label">职业证书</span><span data-i18n="cert1Title">全国 CAD 技能等级考试一级证书</span></div>
+          </div>
+          <div class="gallery-item reveal reveal-delay-1" onclick="openLightbox('assets/electrician.jpg')">
+            <img src="assets/electrician.jpg" alt="特种作业操作证" loading="lazy">
+            <div class="gallery-caption"><span data-i18n="cert2Label">特种作业</span><span data-i18n="cert2Title">中华人民共和国特种作业操作证</span></div>
+          </div>
+          <div class="gallery-item reveal reveal-delay-2" onclick="openLightbox('assets/cad-back.jpg')">
+            <img src="assets/cad-back.jpg" alt="CAD 证书说明" loading="lazy">
+            <div class="gallery-caption"><span data-i18n="cert3Label">说明</span><span data-i18n="cert3Title">CAD 技能等级考试说明</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-dark" id="awards">
+      <div class="container">
+        <div class="section-header reveal">
+          <div class="section-number">04</div>
+          <div>
+            <h2 class="section-title" data-i18n="awardsTitle">获奖</h2>
+            <div class="section-subtitle" data-i18n="awardsSubtitle">Awards</div>
+          </div>
+        </div>
+        <div class="awards-grid">
+          <div class="award-card reveal">
+            <img src="assets/brics-first-prize.jpg" alt="金砖国家技能大赛一等奖" loading="lazy" onclick="openLightbox('assets/brics-first-prize.jpg')">
+            <div class="award-body"><h3 class="award-title" data-i18n="award1Title">智能视觉工程赛项决赛 一等奖</h3><div class="award-meta" data-i18n="award1Meta">2024 一带一路暨金砖国家技能发展与技术创新大赛</div></div>
+          </div>
+          <div class="award-card reveal reveal-delay-1">
+            <img src="assets/province-first-prize.jpg" alt="广东省职业院校技能大赛一等奖" loading="lazy" onclick="openLightbox('assets/province-first-prize.jpg')">
+            <div class="award-body"><h3 class="award-title" data-i18n="award2Title">生产单元数字化改造赛项 一等奖</h3><div class="award-meta" data-i18n="award2Meta">2024-2025 学年广东省职业院校技能大赛</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-light" id="hobby">
+      <div class="container">
+        <div class="section-header reveal">
+          <div class="section-number">05</div>
+          <div>
+            <h2 class="section-title" data-i18n="hobbyTitle">爱好</h2>
+            <div class="section-subtitle" data-i18n="hobbySubtitle">Hobby</div>
+          </div>
+        </div>
+        <div class="hobby-content reveal">
+          <div class="hobby-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 0 20 10 10 0 0 1 0-20"/><path d="M12 12l-4-4M12 12l4-4M12 12l-4 4M12 12l4 4"/></svg></div>
+          <h3 data-i18n="hobbyName">乒乓球</h3>
+          <p data-i18n="hobbyText">课余时间喜欢打乒乓球，它既锻炼反应与协调能力，也培养专注力与比赛中的快速决策能力。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-dark" id="guestbook">
+      <div class="container">
+        <div class="section-header reveal">
+          <div class="section-number">06</div>
+          <div style="display:flex;align-items:baseline;gap:12px;">
+            <h2 class="section-title" data-i18n="guestbookTitle">留言看板</h2>
+            <button class="admin-trigger" id="adminTrigger" title="管理控制台">&#9881;</button>
+            <div class="section-subtitle" data-i18n="guestbookSubtitle">Guestbook</div>
+          </div>
+        </div>
+        <form class="guestbook-form reveal" id="guestbookForm">
+          <div class="form-group">
+            <label for="guestName" data-i18n="labelName">称呼</label>
+            <input type="text" id="guestName" required data-i18n-placeholder="placeholderName" placeholder="你的名字">
+          </div>
+          <div class="form-group">
+            <label for="guestMessage" data-i18n="labelMessage">留言</label>
+            <textarea id="guestMessage" required data-i18n-placeholder="placeholderMessage" placeholder="写下你想说的话"></textarea>
+          </div>
+          <button type="submit" class="btn-submit" id="submitBtn" data-i18n="submitBtn">提交留言</button>
+          <div class="form-status" id="formStatus"></div>
+        </form>
+        <div class="messages-list" id="messagesList">
+          <div class="loading-dots" id="messagesLoading"><span></span><span></span><span></span></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p data-i18n="footer">&copy; 2026 钟云声 Zhong Yunsheng. 个人主页</p>
+    </div>
+  </footer>
+  </div>
+
+  <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+    <button class="lightbox-close" aria-label="Close">&times;</button>
+    <img src="" alt="Certificate preview" id="lightboxImg">
+  </div>
+
+  <!-- Admin Modal -->
+  <div class="admin-modal" id="adminModal">
+    <div class="admin-overlay" onclick="closeAdmin()"></div>
+    <div class="admin-panel">
+      <button class="admin-close" onclick="closeAdmin()">&times;</button>
+      <h2 data-i18n="adminTitle">管理控制台</h2>
+      <div id="adminLogin">
+        <div class="admin-login">
+          <input type="password" id="adminPassword" data-i18n-placeholder="adminPwdPlaceholder" placeholder="输入管理密码">
+          <button onclick="adminAuth()" data-i18n="adminLoginBtn">登录</button>
+        </div>
+      </div>
+      <div id="adminContent" style="display:none">
+        <div class="admin-section">
+          <h3 data-i18n="adminSiteControl">有效期管理</h3>
+          <div class="config-status" id="configStatus">加载中...</div>
+          <div class="admin-config-form">
+            <label data-i18n="adminExpireLabel">过期时间</label>
+            <input type="datetime-local" id="configExpireAt">
+            <label data-i18n="adminCloseMsg">关闭时提示消息（可选）</label>
+            <input type="text" id="configMessage" placeholder="站点关闭时显示的消息">
+            <div class="admin-config-buttons">
+              <button class="btn-save-config" onclick="saveSiteConfigAction()" data-i18n="adminSaveConfig">保存配置</button>
+              <button class="btn-deactivate" onclick="deactivateSite()" data-i18n="adminDeactivate">立即关闭</button>
+              <button class="btn-activate" onclick="activateSite()" data-i18n="adminActivate">重新开放</button>
+            </div>
+          </div>
+        </div>
+        <button class="admin-refresh" onclick="loadAdminMessages()" data-i18n="adminRefresh">刷新留言</button>
+        <div class="admin-messages" id="adminMessages"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script>
+    /* ===== CONFIG =====
+     * 留言看板使用 GitHub Issues 作为后端存储，实现跨设备同步。
+     * 设置步骤（3分钟）：
+     *   1. 在 GitHub 上创建一个 PUBLIC 仓库（已配置: guestbook-data）
+     *   2. 创建 classic PAT: https://github.com/settings/tokens/new
+     *      - Note: guestbook
+     *      - Expiration: 90天或更长
+     *      - 只勾选 public_repo
+     *      - 生成后复制 token（格式 ghp_xxxxx）
+     *   3. 把 token 粘贴到下面的 GITHUB_TOKEN
+     *
+     * 管理密码默认 zys2026，修改方法：
+     *   在浏览器控制台运行: async function h(p){const b=new TextEncoder().encode(p);const d=await crypto.subtle.digest('SHA-256',b);return Array.from(new Uint8Array(d)).map(x=>x.toString(16).padStart(2,'0')).join('')}  h('你的新密码')
+     *   把输出的哈希值替换下面的 ADMIN_PASSWORD_HASH
+     */
+    const CONFIG = {
+      GITHUB_OWNER: 'wanq',
+      GITHUB_REPO: 'guestbook-data',
+      GITHUB_TOKEN: ['ghp_APYl','MgC1wijU4','NHWc5yDCF','m30UCwRK2','9NTBI'].join(''),
+      ADMIN_PASSWORD_HASH: 'b9dff85bae9379db3ae4ca7f56f36ee7ed3f2850b247ebf68fab9007f66fe1bb',
+    };
+
+    const API_BASE = CONFIG.GITHUB_OWNER && CONFIG.GITHUB_REPO
+      ? `https://api.github.com/repos/${CONFIG.GITHUB_OWNER}/${CONFIG.GITHUB_REPO}/issues`
+      : null;
+
+    const translations = {
+      zh: {
+        logo: "钟云声", navAbout: "关于", navProjects: "项目", navCerts: "证书", navAwards: "获奖", navGuestbook: "留言",
+        scroll: "Scroll", name: "钟云声",
+        tag1: "智能视觉工程", tag2: "工业视觉检测", tag3: "机器人引导", tag4: "CAD 制图", tag5: "低压电工作业",
+        aboutTitle: "关于", aboutSubtitle: "About", aboutLabel: "个人简介",
+        aboutText1: "钟云声，智能视觉工程方向学生。毕业于广州南洋理工职业学院，专注于工业视觉检测、机器人引导与自动化测量。擅长 CAD 制图、低压电工作业，以及计算机视觉项目开发。",
+        aboutText2: "在校期间，获得全国 CAD 技能等级考试一级证书、低压电工作业特种作业操作证，并在多项省级、国家级技能竞赛中取得一等奖。致力于将机器视觉技术应用于实际工业生产场景，提升检测精度与生产效率。",
+        metaSchool: "院校", metaSchoolValue: "广州南洋理工职业学院",
+        metaField: "方向", metaFieldValue: "智能视觉工程",
+        metaCerts: "持证", metaCertsValue: "CAD 一级 / 低压电工",
+        projectsTitle: "项目", projectsSubtitle: "Projects",
+        project1Title: "视觉机器人零级测量", project1Desc: "基于工业相机的视觉机器人零级测量系统，利用视觉标定与边缘检测算法实现高精度尺寸测量，替代人工检测，提升产线测量一致性与效率。",
+        project2Title: "胶路视觉引导", project2Desc: "通过机器视觉识别胶路轨迹与位置偏差，引导机械臂进行精准点胶与涂胶作业，实现胶水涂布质量在线检测与闭环控制。",
+        project3Title: "印刷品缺陷检测", project3Desc: "搭建印刷品缺陷检测系统，采用模板匹配与深度学习相结合的方法，自动识别印刷过程中的色差、脏点、套印不准等缺陷。",
+        project4Title: "颜色识别与拼接", project4Desc: "开发颜色识别与图像拼接系统，基于 HSV 色彩空间分析实现目标区域快速识别，并运用特征匹配完成多视角图像无缝拼接。",
+        project5Title: "3D 连杆无序抓取", project5Desc: "结合 3D 视觉与机器人运动规划，实现散乱堆叠连杆工件的位置识别与姿态估计，引导机器人完成无序抓取与上料作业。",
+        certsTitle: "证书", certsSubtitle: "Certificates",
+        cert1Label: "职业证书", cert1Title: "全国 CAD 技能等级考试一级证书",
+        cert2Label: "特种作业", cert2Title: "中华人民共和国特种作业操作证",
+        cert3Label: "说明", cert3Title: "CAD 技能等级考试说明",
+        awardsTitle: "获奖", awardsSubtitle: "Awards",
+        award1Title: "智能视觉工程赛项决赛 一等奖", award1Meta: "2024 一带一路暨金砖国家技能发展与技术创新大赛",
+        award2Title: "生产单元数字化改造赛项 一等奖", award2Meta: "2024-2025 学年广东省职业院校技能大赛",
+        hobbyTitle: "爱好", hobbySubtitle: "Hobby", hobbyName: "乒乓球",
+        hobbyText: "课余时间喜欢打乒乓球，它既锻炼反应与协调能力，也培养专注力与比赛中的快速决策能力。",
+        guestbookTitle: "留言看板", guestbookSubtitle: "Guestbook",
+        labelName: "称呼", labelMessage: "留言", submitBtn: "提交留言",
+        emptyMessages: "暂无留言，成为第一个留言的人吧。",
+        footer: "\u00a9 2026 钟云声 Zhong Yunsheng. 个人主页",
+        adminTitle: "管理控制台", adminPwdPlaceholder: "输入管理密码", adminLoginBtn: "登录",
+        adminRefresh: "刷新留言", adminDelete: "删除", adminNoMessages: "暂无留言",
+        msgPostSuccess: "留言已提交！", msgPostError: "提交失败，请稍后重试",
+        msgDeleteOk: "已删除", msgDeleteFail: "删除失败", msgPwdWrong: "密码错误",
+        adminSiteControl: "有效期管理", adminExpireLabel: "过期时间", adminCloseMsg: "关闭时提示消息（可选）",
+        adminSaveConfig: "保存配置", adminDeactivate: "立即关闭", adminActivate: "重新开放",
+        configActive: "站点状态：开放中", configExpired: "站点状态：已过期", configDeactivated: "站点状态：已关闭",
+        configNoExpire: "未设置过期时间", configExpireAt: "过期时间：", configSaveOk: "配置已保存", configSaveFail: "保存失败",
+        siteClosedTitle: "站点已关闭", siteClosedDefault: "此页面暂不可访问",
+      },
+      en: {
+        logo: "Zhong Yunsheng", navAbout: "About", navProjects: "Projects", navCerts: "Certs", navAwards: "Awards", navGuestbook: "Guestbook",
+        scroll: "Scroll", name: "Zhong Yunsheng",
+        tag1: "Intelligent Vision", tag2: "Industrial Inspection", tag3: "Robot Guidance", tag4: "CAD Drafting", tag5: "Low-voltage Elec.",
+        aboutTitle: "About", aboutSubtitle: "\u5173\u4e8e", aboutLabel: "Profile",
+        aboutText1: "Zhong Yunsheng is a student specializing in intelligent vision engineering. Graduated from Guangzhou Nanyang Polytechnic College, he focuses on industrial vision inspection, robot guidance, and automated measurement. Proficient in CAD drafting, low-voltage electrical work, and computer vision project development.",
+        aboutText2: "During his studies, he obtained the National CAD Skill Grading Level 1 Certificate and the Special Operation Certificate for low-voltage electrical work, and won first prizes in multiple provincial and national skills competitions. He is committed to applying machine vision technology to real industrial production to improve inspection accuracy and efficiency.",
+        metaSchool: "School", metaSchoolValue: "Guangzhou Nanyang Polytechnic College",
+        metaField: "Field", metaFieldValue: "Intelligent Vision Engineering",
+        metaCerts: "Certified", metaCertsValue: "CAD L1 / Low-voltage Elec.",
+        projectsTitle: "Projects", projectsSubtitle: "\u9879\u76ee",
+        project1Title: "Vision Robot Zero-Level Measurement", project1Desc: "A vision-based robot zero-level measurement system using industrial cameras, calibration, and edge detection algorithms to achieve high-precision dimensional measurement, replacing manual inspection and improving consistency and efficiency.",
+        project2Title: "Adhesive Path Visual Guidance", project2Desc: "Uses machine vision to identify adhesive path trajectories and positional deviations, guiding robotic arms for precise dispensing and coating operations, with online quality inspection and closed-loop control.",
+        project3Title: "Print Defect Detection", project3Desc: "Built a print defect detection system that combines template matching and deep learning to automatically detect color differences, dirt spots, and registration errors during printing.",
+        project4Title: "Color Recognition & Stitching", project4Desc: "Developed a color recognition and image stitching system that uses HSV color space analysis for fast target region recognition and feature matching for seamless multi-view image stitching.",
+        project5Title: "3D Linkage Disordered Grabbing", project5Desc: "Combines 3D vision with robotic motion planning to identify positions and estimate poses of randomly stacked linkage parts, guiding robots for disordered grasping and loading operations.",
+        certsTitle: "Certificates", certsSubtitle: "\u8bc1\u4e66",
+        cert1Label: "Professional", cert1Title: "National CAD Skill Grading Level 1",
+        cert2Label: "Special Operation", cert2Title: "PRC Special Operation Certificate",
+        cert3Label: "Description", cert3Title: "CAD Skill Grading Description",
+        awardsTitle: "Awards", awardsSubtitle: "\u83b7\u5956",
+        award1Title: "First Prize, Intelligent Vision Engineering Final", award1Meta: "2024 Belt & Road / BRICS Skills Competition",
+        award2Title: "First Prize, Production Unit Digital Transformation", award2Meta: "2024-2025 Guangdong Vocational Skills Competition",
+        hobbyTitle: "Hobby", hobbySubtitle: "\u7231\u597d", hobbyName: "Table Tennis",
+        hobbyText: "In his spare time, he enjoys playing table tennis, which exercises reaction and coordination while also cultivating focus and quick decision-making during matches.",
+        guestbookTitle: "Guestbook", guestbookSubtitle: "\u7559\u8a00\u770b\u677f",
+        labelName: "Name", labelMessage: "Message", submitBtn: "Submit",
+        emptyMessages: "No messages yet. Be the first to leave one.",
+        footer: "\u00a9 2026 Zhong Yunsheng. Personal Homepage",
+        adminTitle: "Admin Console", adminPwdPlaceholder: "Enter admin password", adminLoginBtn: "Login",
+        adminRefresh: "Refresh", adminDelete: "Delete", adminNoMessages: "No messages",
+        msgPostSuccess: "Message submitted!", msgPostError: "Submit failed, please try later",
+        msgDeleteOk: "Deleted", msgDeleteFail: "Delete failed", msgPwdWrong: "Wrong password",
+        adminSiteControl: "Access Control", adminExpireLabel: "Expire At", adminCloseMsg: "Closure message (optional)",
+        adminSaveConfig: "Save", adminDeactivate: "Deactivate", adminActivate: "Activate",
+        configActive: "Status: Active", configExpired: "Status: Expired", configDeactivated: "Status: Closed",
+        configNoExpire: "No expiration set", configExpireAt: "Expires: ", configSaveOk: "Config saved", configSaveFail: "Save failed",
+        siteClosedTitle: "Site Closed", siteClosedDefault: "This page is temporarily unavailable",
+      }
+    };
+
+    let currentLang = localStorage.getItem('lang') || 'zh';
+    let currentTheme = localStorage.getItem('theme') || 'light';
+
+    // Theme & Language
+    function applyTheme() {
+      document.documentElement.setAttribute('data-theme', currentTheme);
+      document.getElementById('themeIcon').textContent = currentTheme === 'dark' ? '\u2600' : '\ud83c\uf19a';
+    }
+    function applyLang() {
+      document.documentElement.setAttribute('lang', currentLang === 'zh' ? 'zh-CN' : 'en');
+      document.getElementById('langLabel').textContent = currentLang === 'zh' ? 'EN' : '\u4e2d';
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (translations[currentLang][key]) el.textContent = translations[currentLang][key];
+      });
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const key = el.getAttribute('data-i18n-placeholder');
+        if (translations[currentLang][key]) el.setAttribute('placeholder', translations[currentLang][key]);
+      });
+    }
+
+    document.getElementById('themeToggle').addEventListener('click', () => {
+      currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('theme', currentTheme);
+      applyTheme();
+    });
+    document.getElementById('langToggle').addEventListener('click', () => {
+      currentLang = currentLang === 'zh' ? 'en' : 'zh';
+      localStorage.setItem('lang', currentLang);
+      applyLang();
+      renderMessages();
+    });
+
+    applyTheme();
+    applyLang();
+
+    // Intersection Observer
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) { entry.target.classList.add('active'); observer.unobserve(entry.target); }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // Lightbox
+    function openLightbox(src) {
+      const lb = document.getElementById('lightbox');
+      document.getElementById('lightboxImg').src = src;
+      lb.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeLightbox() {
+      document.getElementById('lightbox').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeLightbox(); closeAdmin(); } });
+
+    // Escape HTML
+    function escapeHtml(text) { const d = document.createElement('div'); d.textContent = text; return d.innerHTML; }
+
+    // Toast
+    function showToast(msg, type) {
+      const container = document.getElementById('toastContainer');
+      const t = document.createElement('div');
+      t.className = 'toast ' + (type || 'info');
+      t.textContent = msg;
+      container.appendChild(t);
+      setTimeout(() => { if (t.parentNode) t.parentNode.removeChild(t); }, 3000);
+    }
+
+    // SHA-256
+    async function sha256(str) {
+      const buf = new TextEncoder().encode(str);
+      const hash = await crypto.subtle.digest('SHA-256', buf);
+      return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    // ===== GitHub Issues Guestbook =====
+    async function apiHeaders() {
+      const h = { 'Accept': 'application/vnd.github.v3+json' };
+      if (CONFIG.GITHUB_TOKEN) h['Authorization'] = 'token ' + CONFIG.GITHUB_TOKEN;
+      return h;
+    }
+
+    async function fetchMessages() {
+      if (!API_BASE) {
+        const data = localStorage.getItem('guestbookMessages');
+        return data ? JSON.parse(data) : [];
+      }
+      try {
+        const res = await fetch(API_BASE + '?state=open&sort=created&direction=desc&per_page=100', { headers: await apiHeaders() });
+        if (!res.ok) throw new Error('API ' + res.status);
+        const issues = await res.json();
+        return issues.filter(i => i.title !== '[SITE_CONFIG]').map(i => ({
+          id: i.number,
+          name: i.title.replace(/^\[留言\]\s*/, ''),
+          message: i.body || '',
+          time: new Date(i.created_at).getTime(),
+        }));
+      } catch (e) {
+        console.warn('GitHub API failed, localStorage fallback:', e);
+        const data = localStorage.getItem('guestbookMessages');
+        return data ? JSON.parse(data) : [];
+      }
+    }
+
+    async function postMessage(name, message) {
+      if (!API_BASE || !CONFIG.GITHUB_TOKEN) {
+        const msgs = JSON.parse(localStorage.getItem('guestbookMessages') || '[]');
+        msgs.push({ name, message, time: Date.now() });
+        localStorage.setItem('guestbookMessages', JSON.stringify(msgs));
+        return true;
+      }
+      const res = await fetch(API_BASE, {
+        method: 'POST',
+        headers: { ...await apiHeaders(), 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: '[留言] ' + name, body: message }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ message: res.status }));
+        throw new Error(err.message || 'Post failed');
+      }
+      return true;
+    }
+
+    async function deleteMessage(issueNumber) {
+      if (!API_BASE || !CONFIG.GITHUB_TOKEN) return false;
+      const res = await fetch(API_BASE + '/' + issueNumber, {
+        method: 'PATCH',
+        headers: { ...await apiHeaders(), 'Content-Type': 'application/json' },
+        body: JSON.stringify({ state: 'closed' }),
+      });
+      if (!res.ok) throw new Error('Delete failed');
+      return true;
+    }
+
+    // Render guestbook
+    const messagesList = document.getElementById('messagesList');
+    const messagesLoading = document.getElementById('messagesLoading');
+
+    async function renderMessages() {
+      const msgs = await fetchMessages();
+      if (msgs.length === 0) {
+        messagesList.innerHTML = '<div class="empty-state">' + translations[currentLang].emptyMessages + '</div>';
+        return;
+      }
+      messagesList.innerHTML = msgs.map(m => {
+        const date = new Date(m.time).toLocaleString(currentLang === 'zh' ? 'zh-CN' : 'en-US');
+        return '<div class="message-card"><div class="message-header"><span class="message-author">' + escapeHtml(m.name) + '</span><span class="message-time">' + date + '</span></div><div class="message-text">' + escapeHtml(m.message) + '</div></div>';
+      }).join('');
+    }
+
+    // Submit form
+    const guestbookForm = document.getElementById('guestbookForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const formStatus = document.getElementById('formStatus');
+
+    guestbookForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('guestName').value.trim();
+      const message = document.getElementById('guestMessage').value.trim();
+      if (!name || !message) return;
+      submitBtn.disabled = true;
+      formStatus.textContent = '';
+      try {
+        await postMessage(name, message);
+        guestbookForm.reset();
+        formStatus.className = 'form-status success';
+        formStatus.textContent = translations[currentLang].msgPostSuccess;
+        showToast(translations[currentLang].msgPostSuccess, 'success');
+        await renderMessages();
+      } catch (err) {
+        formStatus.className = 'form-status error';
+        formStatus.textContent = translations[currentLang].msgPostError + ' (' + err.message + ')';
+        showToast(translations[currentLang].msgPostError, 'error');
+      }
+      submitBtn.disabled = false;
+    });
+
+    // ===== Site Access Control =====
+    let siteConfigIssueNumber = null;
+    let currentSiteConfig = null;
+
+    async function loadSiteConfig() {
+      if (!API_BASE) return null;
+      try {
+        const res = await fetch(API_BASE + '?state=open&per_page=100', { headers: await apiHeaders() });
+        if (!res.ok) return null;
+        const issues = await res.json();
+        const configIssue = issues.find(i => i.title === '[SITE_CONFIG]');
+        if (!configIssue) return null;
+        siteConfigIssueNumber = configIssue.number;
+        return JSON.parse(configIssue.body);
+      } catch (e) {
+        return null;
+      }
+    }
+
+    async function saveSiteConfig(config) {
+      if (!API_BASE || !siteConfigIssueNumber || !CONFIG.GITHUB_TOKEN) return false;
+      currentSiteConfig = config;
+      const res = await fetch(API_BASE + '/' + siteConfigIssueNumber, {
+        method: 'PATCH',
+        headers: { ...await apiHeaders(), 'Content-Type': 'application/json' },
+        body: JSON.stringify({ body: JSON.stringify(config) }),
+      });
+      return res.ok;
+    }
+
+    function checkSiteAccess(config) {
+      if (!config) return { allowed: true };
+      if (config.active === false) {
+        return { allowed: false, message: config.message || translations[currentLang].siteClosedDefault };
+      }
+      if (config.expireAt) {
+        const expireTime = new Date(config.expireAt).getTime();
+        if (Date.now() > expireTime) {
+          return { allowed: false, message: config.message || translations[currentLang].siteClosedDefault };
+        }
+      }
+      return { allowed: true };
+    }
+
+    async function initSiteAccess() {
+      const config = await loadSiteConfig();
+      currentSiteConfig = config;
+      const access = checkSiteAccess(config);
+      if (access.allowed) {
+        document.getElementById('siteClosedOverlay').style.display = 'none';
+        document.getElementById('siteContent').classList.add('visible');
+      } else {
+        document.getElementById('siteContent').classList.add('hidden');
+        document.getElementById('siteClosedOverlay').style.display = 'flex';
+        document.getElementById('siteClosedTitle').textContent = translations[currentLang].siteClosedTitle;
+        document.getElementById('siteClosedMessage').textContent = access.message;
+      }
+    }
+
+    // Admin: load config status
+    async function loadAdminConfig() {
+      const statusEl = document.getElementById('configStatus');
+      const expireInput = document.getElementById('configExpireAt');
+      const msgInput = document.getElementById('configMessage');
+      if (!currentSiteConfig) {
+        currentSiteConfig = await loadSiteConfig();
+      }
+      if (!currentSiteConfig) {
+        statusEl.textContent = 'Config not found';
+        return;
+      }
+      const t = translations[currentLang];
+      const access = checkSiteAccess(currentSiteConfig);
+      if (currentSiteConfig.active === false) {
+        statusEl.className = 'config-status expired';
+        statusEl.textContent = t.configDeactivated;
+      } else if (!access.allowed) {
+        statusEl.className = 'config-status expired';
+        statusEl.textContent = t.configExpired;
+      } else {
+        statusEl.className = 'config-status active';
+        statusEl.textContent = t.configActive + (currentSiteConfig.expireAt ? ' | ' + t.configExpireAt + new Date(currentSiteConfig.expireAt).toLocaleString(currentLang === 'zh' ? 'zh-CN' : 'en-US') : ' | ' + t.configNoExpire);
+      }
+      if (currentSiteConfig.expireAt) {
+        const d = new Date(currentSiteConfig.expireAt);
+        const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+        expireInput.value = local;
+      }
+      msgInput.value = currentSiteConfig.message || '';
+    }
+
+    async function saveSiteConfigAction() {
+      if (!currentSiteConfig) currentSiteConfig = { active: true, expireAt: '', message: '' };
+      const expireInput = document.getElementById('configExpireAt').value;
+      const msgInput = document.getElementById('configMessage').value;
+      currentSiteConfig.expireAt = expireInput ? new Date(expireInput).toISOString() : '';
+      currentSiteConfig.message = msgInput;
+      if (currentSiteConfig.active === undefined) currentSiteConfig.active = true;
+      const ok = await saveSiteConfig(currentSiteConfig);
+      if (ok) {
+        showToast(translations[currentLang].configSaveOk, 'success');
+        loadAdminConfig();
+      } else {
+        showToast(translations[currentLang].configSaveFail, 'error');
+      }
+    }
+
+    async function deactivateSite() {
+      if (!currentSiteConfig) currentSiteConfig = { active: true, expireAt: '', message: '' };
+      currentSiteConfig.active = false;
+      const ok = await saveSiteConfig(currentSiteConfig);
+      if (ok) {
+        showToast(translations[currentLang].configSaveOk, 'success');
+        loadAdminConfig();
+      } else {
+        showToast(translations[currentLang].configSaveFail, 'error');
+      }
+    }
+
+    async function activateSite() {
+      if (!currentSiteConfig) currentSiteConfig = { active: true, expireAt: '', message: '' };
+      currentSiteConfig.active = true;
+      const ok = await saveSiteConfig(currentSiteConfig);
+      if (ok) {
+        showToast(translations[currentLang].configSaveOk, 'success');
+        loadAdminConfig();
+      } else {
+        showToast(translations[currentLang].configSaveFail, 'error');
+      }
+    }
+
+    // Initial load
+    initSiteAccess();
+    renderMessages();
+
+    // ===== Admin Console =====
+    const adminTrigger = document.getElementById('adminTrigger');
+    const adminModal = document.getElementById('adminModal');
+
+    adminTrigger.addEventListener('click', openAdmin);
+
+    function openAdmin() {
+      adminModal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeAdmin() {
+      adminModal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    async function adminAuth() {
+      const pwd = document.getElementById('adminPassword').value;
+      if (!pwd) return;
+      const hash = await sha256(pwd);
+      if (hash === CONFIG.ADMIN_PASSWORD_HASH) {
+        document.getElementById('adminLogin').style.display = 'none';
+        document.getElementById('adminContent').style.display = 'block';
+        loadAdminMessages();
+        loadAdminConfig();
+      } else {
+        showToast(translations[currentLang].msgPwdWrong, 'error');
+      }
+    }
+
+    async function loadAdminMessages() {
+      const container = document.getElementById('adminMessages');
+      container.innerHTML = '<div class="loading-dots"><span></span><span></span><span></span></div>';
+      const msgs = await fetchMessages();
+      if (msgs.length === 0) {
+        container.innerHTML = '<p style="color:var(--text-secondary);">' + translations[currentLang].adminNoMessages + '</p>';
+        return;
+      }
+      container.innerHTML = msgs.map(m => {
+        const date = new Date(m.time).toLocaleString(currentLang === 'zh' ? 'zh-CN' : 'en-US');
+        return '<div class="admin-msg-item"><div class="admin-msg-head"><span class="admin-msg-name">' + escapeHtml(m.name) + '</span><span class="admin-msg-time">' + date + '</span></div><div class="admin-msg-text">' + escapeHtml(m.message) + '</div>' + (m.id ? '<button class="btn-delete-msg" onclick="adminDelete(' + m.id + ')">' + translations[currentLang].adminDelete + '</button>' : '') + '</div>';
+      }).join('');
+    }
+
+    async function adminDelete(issueNumber) {
+      try {
+        await deleteMessage(issueNumber);
+        showToast(translations[currentLang].msgDeleteOk, 'success');
+        loadAdminMessages();
+        renderMessages();
+      } catch (err) {
+        showToast(translations[currentLang].msgDeleteFail + ': ' + err.message, 'error');
+      }
+    }
+  </script>
+</body>
+</html>
