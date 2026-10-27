@@ -661,30 +661,25 @@
 
   <script>
     /* ===== CONFIG =====
-     * 留言看板使用 GitHub Issues 作为后端存储，实现跨设备同步。
-     * 设置步骤（3分钟）：
-     *   1. 在 GitHub 上创建一个 PUBLIC 仓库（已配置: guestbook-data）
-     *   2. 创建 classic PAT: https://github.com/settings/tokens/new
-     *      - Note: guestbook
-     *      - Expiration: 90天或更长
-     *      - 只勾选 public_repo
-     *      - 生成后复制 token（格式 ghp_xxxxx）
-     *   3. 把 token 粘贴到下面的 GITHUB_TOKEN
-     *
-     * 管理密码默认 zys2026，修改方法：
-     *   在浏览器控制台运行: async function h(p){const b=new TextEncoder().encode(p);const d=await crypto.subtle.digest('SHA-256',b);return Array.from(new Uint8Array(d)).map(x=>x.toString(16).padStart(2,'0')).join('')}  h('你的新密码')
-     *   把输出的哈希值替换下面的 ADMIN_PASSWORD_HASH
+     * Guestbook uses same-origin /api/* routes.
+     * GitHub token and admin password live only in Vercel env vars.
      */
-    const CONFIG = {
-      GITHUB_OWNER: 'wanq',
-      GITHUB_REPO: 'guestbook-data',
-      GITHUB_TOKEN: ['ghp_APYl','MgC1wijU4','NHWc5yDCF','m30UCwRK2','9NTBI'].join(''),
-      ADMIN_PASSWORD_HASH: 'b9dff85bae9379db3ae4ca7f56f36ee7ed3f2850b247ebf68fab9007f66fe1bb',
+    const API = {
+      messages: '/api/messages',
+      siteConfig: '/api/site-config',
+      adminLogin: '/api/admin/login',
     };
 
-    const API_BASE = CONFIG.GITHUB_OWNER && CONFIG.GITHUB_REPO
-      ? `https://api.github.com/repos/${CONFIG.GITHUB_OWNER}/${CONFIG.GITHUB_REPO}/issues`
-      : null;
+    function adminPassword() {
+      return sessionStorage.getItem('adminPassword') || '';
+    }
+
+    function adminHeaders(extra) {
+      const h = Object.assign({ 'Content-Type': 'application/json' }, extra || {});
+      const pwd = adminPassword();
+      if (pwd) h['x-admin-password'] = pwd;
+      return h;
+    }
 
     const translations = {
       zh: {
@@ -837,69 +832,48 @@
       setTimeout(() => { if (t.parentNode) t.parentNode.removeChild(t); }, 3000);
     }
 
-    // SHA-256
-    async function sha256(str) {
-      const buf = new TextEncoder().encode(str);
-      const hash = await crypto.subtle.digest('SHA-256', buf);
-      return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
-    }
 
-    // ===== GitHub Issues Guestbook =====
-    async function apiHeaders() {
-      const h = { 'Accept': 'application/vnd.github.v3+json' };
-      if (CONFIG.GITHUB_TOKEN) h['Authorization'] = 'token ' + CONFIG.GITHUB_TOKEN;
-      return h;
-    }
-
+    // ===== Guestbook via same-origin API =====
     async function fetchMessages() {
-      if (!API_BASE) {
-        const data = localStorage.getItem('guestbookMessages');
-        return data ? JSON.parse(data) : [];
-      }
       try {
-        const res = await fetch(API_BASE + '?state=open&sort=created&direction=desc&per_page=100&_t=' + Date.now(), { headers: await apiHeaders(), cache: 'no-store' });
+        const res = await fetch(API.messages + '?_t=' + Date.now(), { cache: 'no-store' });
         if (!res.ok) throw new Error('API ' + res.status);
-        const issues = await res.json();
-        return issues.filter(i => i.title !== '[SITE_CONFIG]').map(i => ({
-          id: i.number,
-          name: i.title.replace(/^\[留言\]\s*/, ''),
-          message: i.body || '',
-          time: new Date(i.created_at).getTime(),
+        const data = await res.json();
+        const list = Array.isArray(data.messages) ? data.messages : [];
+        return list.map(i => ({
+          id: i.number || i.id,
+          name: i.name || i.title || '',
+          message: i.message || i.body || '',
+          time: i.time || (i.created_at ? new Date(i.created_at).getTime() : Date.now()),
         }));
       } catch (e) {
-        console.warn('GitHub API failed, localStorage fallback:', e);
-        const data = localStorage.getItem('guestbookMessages');
-        return data ? JSON.parse(data) : [];
+        console.warn('Messages API failed:', e);
+        return [];
       }
     }
 
     async function postMessage(name, message) {
-      if (!API_BASE || !CONFIG.GITHUB_TOKEN) {
-        const msgs = JSON.parse(localStorage.getItem('guestbookMessages') || '[]');
-        msgs.push({ name, message, time: Date.now() });
-        localStorage.setItem('guestbookMessages', JSON.stringify(msgs));
-        return true;
-      }
-      const res = await fetch(API_BASE, {
+      const res = await fetch(API.messages, {
         method: 'POST',
-        headers: { ...await apiHeaders(), 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title: '[留言] ' + name, body: message }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, message }),
       });
       if (!res.ok) {
-        const err = await res.json().catch(() => ({ message: res.status }));
-        throw new Error(err.message || 'Post failed');
+        const err = await res.json().catch(() => ({ error: res.status }));
+        throw new Error(err.error || err.message || 'Post failed');
       }
       return true;
     }
 
     async function deleteMessage(issueNumber) {
-      if (!API_BASE || !CONFIG.GITHUB_TOKEN) return false;
-      const res = await fetch(API_BASE + '/' + issueNumber, {
-        method: 'PATCH',
-        headers: { ...await apiHeaders(), 'Content-Type': 'application/json' },
-        body: JSON.stringify({ state: 'closed' }),
+      const res = await fetch(API.messages + '?number=' + encodeURIComponent(issueNumber), {
+        method: 'DELETE',
+        headers: adminHeaders(),
       });
-      if (!res.ok) throw new Error('Delete failed');
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ error: res.status }));
+        throw new Error(err.error || 'Delete failed');
+      }
       return true;
     }
 
@@ -951,15 +925,16 @@
     let currentSiteConfig = null;
 
     async function loadSiteConfig() {
-      if (!API_BASE) return null;
       try {
-        const res = await fetch(API_BASE + '?state=open&per_page=100&_t=' + Date.now(), { headers: await apiHeaders(), cache: 'no-store' });
+        const res = await fetch(API.siteConfig + '?_t=' + Date.now(), { cache: 'no-store' });
         if (!res.ok) throw new Error('API ' + res.status);
-        const issues = await res.json();
-        const configIssue = issues.find(i => i.title === '[SITE_CONFIG]');
-        if (!configIssue) return null;
-        siteConfigIssueNumber = configIssue.number;
-        return JSON.parse(configIssue.body);
+        const cfg = await res.json();
+        siteConfigIssueNumber = cfg.issueNumber || null;
+        return {
+          active: cfg.active !== false,
+          expireAt: cfg.expireAt || '',
+          message: cfg.message || '',
+        };
       } catch (e) {
         console.error('Load site config failed:', e);
         return { active: false, message: '访问验证失败，请刷新重试' };
@@ -967,13 +942,16 @@
     }
 
     async function saveSiteConfig(config) {
-      if (!API_BASE || !siteConfigIssueNumber || !CONFIG.GITHUB_TOKEN) return false;
       currentSiteConfig = config;
-      const res = await fetch(API_BASE + '/' + siteConfigIssueNumber, {
-        method: 'PATCH',
-        headers: { ...await apiHeaders(), 'Content-Type': 'application/json' },
-        body: JSON.stringify({ body: JSON.stringify(config) }),
+      const res = await fetch(API.siteConfig, {
+        method: 'POST',
+        headers: adminHeaders(),
+        body: JSON.stringify(config),
       });
+      if (res.ok) {
+        const saved = await res.json().catch(() => null);
+        if (saved && saved.issueNumber) siteConfigIssueNumber = saved.issueNumber;
+      }
       return res.ok;
     }
 
@@ -1102,13 +1080,22 @@
     async function adminAuth() {
       const pwd = document.getElementById('adminPassword').value;
       if (!pwd) return;
-      const hash = await sha256(pwd);
-      if (hash === CONFIG.ADMIN_PASSWORD_HASH) {
+      try {
+        const res = await fetch(API.adminLogin, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: pwd }),
+        });
+        if (!res.ok) {
+          showToast(translations[currentLang].msgPwdWrong, 'error');
+          return;
+        }
+        sessionStorage.setItem('adminPassword', pwd);
         document.getElementById('adminLogin').style.display = 'none';
         document.getElementById('adminContent').style.display = 'block';
         loadAdminMessages();
         loadAdminConfig();
-      } else {
+      } catch (e) {
         showToast(translations[currentLang].msgPwdWrong, 'error');
       }
     }

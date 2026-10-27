@@ -166,22 +166,24 @@
   <div class="toast" id="toast"></div>
 
   <script>
-    const CONFIG = {
-      GITHUB_OWNER: 'wanq',
-      GITHUB_REPO: 'guestbook-data',
-      GITHUB_TOKEN: ['ghp_APYl','MgC1wijU4','NHWc5yDCF','m30UCwRK2','9NTBI'].join(''),
-      ADMIN_PASSWORD_HASH: 'b9dff85bae9379db3ae4ca7f56f36ee7ed3f2850b247ebf68fab9007f66fe1bb',
-      MAIN_SITE_URL: 'https://guestbook-data.vercel.app/',
-      CHINA_SITE_URL: window.location.hostname.includes('codebuddy.work') ? window.location.origin + '/' : '',
+    const API = {
+      siteConfig: '/api/site-config',
+      adminLogin: '/api/admin/login',
     };
+    const MAIN_SITE_URL = 'https://guestbook-data.vercel.app/';
+    const CHINA_SITE_URL = window.location.hostname.includes('codebuddy.work') ? window.location.origin + '/' : '';
 
-    const API_BASE = `https://api.github.com/repos/${CONFIG.GITHUB_OWNER}/${CONFIG.GITHUB_REPO}/issues`;
-    let siteConfigIssue = null;
+    let currentConfig = { active: true, expireAt: '', message: '' };
     let isSaving = false;
 
-    function apiHeaders() {
-      const h = { 'Accept': 'application/vnd.github.v3+json' };
-      if (CONFIG.GITHUB_TOKEN) h['Authorization'] = 'token ' + CONFIG.GITHUB_TOKEN;
+    function adminPassword() {
+      return sessionStorage.getItem('adminPassword') || '';
+    }
+
+    function adminHeaders() {
+      const h = { 'Content-Type': 'application/json' };
+      const pwd = adminPassword();
+      if (pwd) h['x-admin-password'] = pwd;
       return h;
     }
 
@@ -189,11 +191,7 @@
       document.querySelectorAll('.btn-group .btn').forEach(btn => btn.disabled = disabled);
     }
 
-    async function saveConfigToGithub(cfg, successMsg) {
-      if (!siteConfigIssue) {
-        showToast('未找到配置 Issue', 'error');
-        return false;
-      }
+    async function saveConfigToApi(cfg, successMsg) {
       if (isSaving) {
         showToast('正在保存，请稍候', 'error');
         return false;
@@ -201,14 +199,22 @@
       isSaving = true;
       setButtonsDisabled(true);
       try {
-        const res = await fetch(API_BASE + '/' + siteConfigIssue.number, {
-          method: 'PATCH',
-          headers: { ...apiHeaders(), 'Content-Type': 'application/json' },
-          body: JSON.stringify({ body: JSON.stringify(cfg) })
+        const res = await fetch(API.siteConfig, {
+          method: 'POST',
+          headers: adminHeaders(),
+          body: JSON.stringify(cfg),
         });
-        if (!res.ok) throw new Error('API ' + res.status);
-        siteConfigIssue.body = JSON.stringify(cfg);
-        renderStatus(cfg);
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.error || ('API ' + res.status));
+        }
+        const saved = await res.json();
+        currentConfig = {
+          active: saved.active !== false,
+          expireAt: saved.expireAt || '',
+          message: saved.message || '',
+        };
+        renderStatus(currentConfig);
         showToast(successMsg, 'success');
         return true;
       } catch (e) {
@@ -220,44 +226,49 @@
       }
     }
 
-    async function sha256(str) {
-      const buf = new TextEncoder().encode(str);
-      const hash = await crypto.subtle.digest('SHA-256', buf);
-      return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
-    }
-
     async function adminLogin() {
       const pwd = document.getElementById('adminPassword').value;
       if (!pwd) return;
-      const hash = await sha256(pwd);
-      if (hash === CONFIG.ADMIN_PASSWORD_HASH) {
+      try {
+        const res = await fetch(API.adminLogin, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: pwd }),
+        });
+        if (!res.ok) {
+          showToast('密码错误', 'error');
+          return;
+        }
+        sessionStorage.setItem('adminPassword', pwd);
         document.getElementById('loginBox').classList.add('hidden');
         document.getElementById('controlBox').classList.remove('hidden');
-        document.getElementById('mainLink').textContent = CONFIG.MAIN_SITE_URL;
-        document.getElementById('chinaLink').textContent = CONFIG.CHINA_SITE_URL || '（部署后自动显示）';
+        document.getElementById('mainLink').textContent = MAIN_SITE_URL;
+        document.getElementById('chinaLink').textContent = CHINA_SITE_URL || '（部署后自动显示）';
         await loadConfig();
-      } else {
-        showToast('密码错误', 'error');
+      } catch (e) {
+        showToast('登录失败：' + e.message, 'error');
       }
     }
 
     async function loadConfig() {
       try {
-        const res = await fetch(API_BASE + '?state=open&per_page=100&_t=' + Date.now(), { headers: apiHeaders(), cache: 'no-store' });
-        const issues = await res.json();
-        siteConfigIssue = issues.find(i => i.title === '[SITE_CONFIG]');
-        if (!siteConfigIssue) {
-          showToast('未找到站点配置，请先在主页生成', 'error');
-          return;
-        }
-        const cfg = JSON.parse(siteConfigIssue.body);
-        renderStatus(cfg);
-        if (cfg.expireAt) {
-          const d = new Date(cfg.expireAt);
+        const res = await fetch(API.siteConfig + '?_t=' + Date.now(), { cache: 'no-store' });
+        if (!res.ok) throw new Error('API ' + res.status);
+        const cfg = await res.json();
+        currentConfig = {
+          active: cfg.active !== false,
+          expireAt: cfg.expireAt || '',
+          message: cfg.message || '',
+        };
+        renderStatus(currentConfig);
+        if (currentConfig.expireAt) {
+          const d = new Date(currentConfig.expireAt);
           const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
           document.getElementById('expireAt').value = local;
+        } else {
+          document.getElementById('expireAt').value = '';
         }
-        document.getElementById('closeMessage').value = cfg.message || '';
+        document.getElementById('closeMessage').value = currentConfig.message || '';
       } catch (e) {
         showToast('加载配置失败：' + e.message, 'error');
       }
@@ -284,10 +295,7 @@
     }
 
     function buildConfig() {
-      const cfg = { active: true, expireAt: '', message: '' };
-      if (siteConfigIssue) {
-        try { Object.assign(cfg, JSON.parse(siteConfigIssue.body)); } catch(e){}
-      }
+      const cfg = Object.assign({ active: true, expireAt: '', message: '' }, currentConfig || {});
       const expireInput = document.getElementById('expireAt').value;
       cfg.expireAt = expireInput ? new Date(expireInput).toISOString() : '';
       cfg.message = document.getElementById('closeMessage').value;
@@ -295,19 +303,19 @@
     }
 
     async function saveConfig() {
-      await saveConfigToGithub(buildConfig(), '设置已保存');
+      await saveConfigToApi(buildConfig(), '设置已保存');
     }
 
     async function closeNow() {
       const cfg = buildConfig();
       cfg.active = false;
-      await saveConfigToGithub(cfg, '站点已关闭');
+      await saveConfigToApi(cfg, '站点已关闭');
     }
 
     async function openNow() {
       const cfg = buildConfig();
       cfg.active = true;
-      await saveConfigToGithub(cfg, '站点已重新开放');
+      await saveConfigToApi(cfg, '站点已重新开放');
     }
 
     function showToast(msg, type) {
